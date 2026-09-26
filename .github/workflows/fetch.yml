@@ -26,7 +26,7 @@ jobs:
           CRICFY_AES_IV: ${{ secrets.CRICFY_AES_IV }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python fetch_and_decrypt_3.py # เลือกชื่อไฟล์ Python ที่คุณจะใช้หลัก
+        run: python fetch_and_decrypt.py # เลือกชื่อไฟล์ Python ที่คุณจะใช้หลัก
 
       - name: Commit and Push Changes
         run: |
