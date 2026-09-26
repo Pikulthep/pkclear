@@ -1,0 +1,55 @@
+{
+  "website_url": "https://tv.evildox.dev",
+  "data_mappings": {
+    "settings": {
+      "api_path": "/api/settings",
+      "data_retrieved": [
+        "siteName",
+        "siteUrl",
+        "logoUrl",
+        "faviconUrl",
+        "facebook",
+        "telegram",
+        "discord"
+      ]
+    },
+    "app_version_updates": {
+      "api_path": "/api/app-version-updates",
+      "data_retrieved": [
+        "version",
+        "description",
+        "downloadUrl",
+        "isRequired",
+        "releaseDate"
+      ]
+    },
+    "mobile_apk_landing": {
+      "api_path": "/api/mobile-apk-landing",
+      "data_retrieved": [
+        "id",
+        "title",
+        "text",
+        "imageUrl",
+        "pageUrl",
+        "isActive"
+      ]
+    },
+    "app_ads_config": {
+      "api_path": "/api/ads/app",
+      "data_retrieved": [
+        "enabled",
+        "link_ad_enabled",
+        "link_ad_url",
+        "direct_link_enabled",
+        "direct_link_url"
+      ]
+    },
+    "mobile_app_heartbeat": {
+      "api_path": "/api/heartbeat/app",
+      "data_sent": [
+        "sessionId",
+        "action"
+      ]
+    }
+  }
+}
