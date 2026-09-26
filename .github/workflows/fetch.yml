@@ -1,38 +1,38 @@
-name: Fetch and Decrypt Data
+name: Run Cricfy Feed Processor
+
 on:
   schedule:
-    - cron: '*/30 * * * *' # รันอัตโนมัติทุกๆ 30 นาที (ปรับได้)
-  workflow_dispatch: # อนุญาตให้กดรันเอง (Manual trigger)
+    - cron: '*/5 * * * *'   # Runs every 5 minutes
+  workflow_dispatch:      # Allows manual trigger
+
+permissions:
+  contents: write
 
 jobs:
-  fetch_data:
+  run-processor:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        cache: 'pip'
 
-      - name: Install Requirements
-        run: pip install -r requirements.txt
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
 
-      - name: Run Fetch and Decrypt Script
-        env:
-          CRICFY_TOKEN: ${{ secrets.CRICFY_TOKEN }}
-          CRICFY_AES_KEY: ${{ secrets.CRICFY_AES_KEY }}
-          CRICFY_AES_IV: ${{ secrets.CRICFY_AES_IV }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python fetch_fresh.py # เลือกชื่อไฟล์ Python ที่คุณจะใช้หลัก
+    - name: Run Decryption and Scraper
+      run: |
+        python fetch_and_decrypt.py
 
-      - name: Commit and Push Changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add public_decrypted/ # หรือ decrypted_output/ ตามที่คุณตั้งโฟลเดอร์ไว้
-          # เช็กว่ามีไฟล์เปลี่ยนแปลงไหม ถ้ามีค่อย Commit
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update decrypted data"
-          git push
+    - name: Commit and Push Decrypted Files
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add public_decrypted/
+        git commit -m "chore: update cricfy decrypted feeds [skip ci]" || exit 0
+        git push
