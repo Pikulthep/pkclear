@@ -27,7 +27,7 @@ jobs:
 
     - name: Run Decryption and Scraper
       run: |
-        python fetch_and_decrypt.py
+        python fetch_fresh.py
 
     - name: Commit and Push Decrypted Files
       run: |
