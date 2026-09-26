@@ -1,0 +1,38 @@
+name: Fetch and Decrypt Data
+on:
+  schedule:
+    - cron: '*/30 * * * *' # รันอัตโนมัติทุกๆ 30 นาที (ปรับได้)
+  workflow_dispatch: # อนุญาตให้กดรันเอง (Manual trigger)
+
+jobs:
+  fetch_data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Requirements
+        run: pip install -r requirements.txt
+
+      - name: Run Fetch and Decrypt Script
+        env:
+          CRICFY_TOKEN: ${{ secrets.CRICFY_TOKEN }}
+          CRICFY_AES_KEY: ${{ secrets.CRICFY_AES_KEY }}
+          CRICFY_AES_IV: ${{ secrets.CRICFY_AES_IV }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python fetch_and_decrypt_3.py # เลือกชื่อไฟล์ Python ที่คุณจะใช้หลัก
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add public_decrypted/ # หรือ decrypted_output/ ตามที่คุณตั้งโฟลเดอร์ไว้
+          # เช็กว่ามีไฟล์เปลี่ยนแปลงไหม ถ้ามีค่อย Commit
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update decrypted data"
+          git push
